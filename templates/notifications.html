@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block title %}Notifications{% endblock %}{% block content %}<span class="pill">NOTIFICATIONS</span><h1>🔔 Notifications</h1><div class="notice-list">{% for n in rows %}<div class="notice"><b>{{n.message}}</b><small>{{n.created_at}}</small></div>{% else %}<p class="muted">No notifications.</p>{% endfor %}</div>{% endblock %}
