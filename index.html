@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}AutoConnect — Home{% endblock %}{% block content %}
+<section class="hero"><div><span class="pill">SMART LOCAL SERVICE PLATFORM</span><h1>Find trusted workers <span>near you.</span></h1>
+<p>Describe your problem, discover verified service providers, book them, track the job, pay and review — in one connected flow.</p>
+<div class="actions"><a class="btn" href="{{url_for('dashboard')}}">Find a Service</a><a class="btn ghost" href="{{url_for('register')}}?role=worker">Become a Worker</a></div></div>
+<div class="hero-card"><div class="orb">🚗</div><h3>AutoConnect</h3><p>From problem → worker → work → payment → receipt.</p></div></section>
+<section><h2>Popular Services</h2><div class="grid cards">{% for s in services %}<a class="card service" href="{{url_for('workers',service=s)}}"><div class="icon">{{ {'Electrician':'🔧','Plumber':'🚰','Mechanic':'🚗','Tutor':'📚','Cleaner':'🧹','Carpenter':'🪚','AC Repair':'❄️','Other':'🛠️'}[s] }}</div><h3>{{s}}</h3><p>Find nearby providers</p></a>{% endfor %}</div></section>
+<section class="how"><h2>How AutoConnect Works</h2><div class="steps">{% for x in ['Describe Problem','Find Nearby Worker','Book Worker','Get Work Done','Pay & Review'] %}<div><b>{{loop.index}}</b><span>{{x}}</span></div>{% endfor %}</div></section>
+<section class="emergency-strip"><div><h2>🚨 Need urgent help?</h2><p>Find available workers quickly for common emergencies.</p></div><a class="btn danger" href="{{url_for('emergency')}}">Emergency Service</a></section>
+{% endblock %}

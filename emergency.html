@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Emergency Service{% endblock %}{% block content %}
+<div class="emergency-head"><span>🚨</span><div><span class="pill">EMERGENCY MODE</span><h1>Get help quickly</h1><p>Select the emergency and we will show available verified workers.</p></div></div>
+<div class="grid emergency-options"><button class="card service" onclick="findEmergency('Water Leakage')">🚰<b>Water Leakage</b></button><button class="card service" onclick="findEmergency('Electrical Failure')">⚡<b>Electrical Failure</b></button><button class="card service" onclick="findEmergency('Vehicle Breakdown')">🚗<b>Vehicle Breakdown</b></button><button class="card service" onclick="findEmergency('Other Emergency')">🆘<b>Other Emergency</b></button></div>
+<div id="emergencyResult" class="hidden"><h2>Nearest Available Workers</h2><div id="emergencyList" class="grid"></div></div>
+{% endblock %}
