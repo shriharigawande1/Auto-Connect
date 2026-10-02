@@ -1,14 +1,52 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, send_file
-import sqlite3, os, secrets, io, qrcode
+
+import sqlite3
+import os
+import secrets
+import io
+import qrcode
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from math import radians, sin, cos, asin, sqrt
 
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase: Client = None
+if SUPABASE_URL and SUPABASE_KEY:
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 BASE = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(BASE, "autoconnect.db")
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "autoconnect-demo-secret-change-me")
+
+@app.route("/test-supabase")
+def test_supabase():
+    if supabase is None:
+        return jsonify({
+            "success": False,
+            "error": "SUPABASE_URL or SUPABASE_KEY is missing from .env"
+        }), 500
+
+    try:
+        response = supabase.table("workers").select("*").limit(5).execute()
+        return jsonify({
+            "success": True,
+            "message": "Supabase connected successfully!",
+            "workers": response.data
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
 SERVICES = {
     "Electrician": (300, 600), "Plumber": (250, 700), "Mechanic": (400, 1200),
@@ -98,7 +136,12 @@ def inject():
     u=current_user()
     count=0
     if u:
-        con=db(); count=con.execute("SELECT COUNT(*) FROM notifications WHERE user_id=? AND is_read=0",(u["id"],)).fetchone()[0]; con.close()
+        con=db()
+        count=con.execute(
+            "SELECT COUNT(*) FROM notifications WHERE user_id=? AND is_read=0",
+            (u["id"],)
+        ).fetchone()[0]
+        con.close()
     return {"user":u,"notification_count":count}
 
 @app.route("/")
