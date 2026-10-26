@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Book Worker{% endblock %}{% block content %}
+<div class="form-page"><div class="card"><span class="pill">BOOKING</span><h1>Hire {{w.name}}</h1><p>{{w.skill}} · ⭐ {{'%.1f'|format(w.rating)}} · {{w.experience}} years</p>
+<form method="post"><label>Service<select name="service" required>{% for s in services %}<option {% if s==w.skill %}selected{% endif %}>{{s}}</option>{% endfor %}</select></label>
+<label>Problem<textarea name="problem" required placeholder="Describe the work needed"></textarea></label>
+<div class="two"><label>Date<input type="date" name="date" required></label><label>Time<input type="time" name="time" required></label></div>
+<div class="two"><label>Urgency<select name="urgency"><option>Low</option><option selected>Medium</option><option>High</option><option>Critical</option></select></label><label>Estimated Amount ₹<input type="number" name="amount" value="{{w.rate}}" min="0"></label></div>
+<label class="check"><input type="checkbox" name="emergency" value="1"> This is an emergency request</label><button class="btn full">Confirm Booking</button></form></div></div>
+{% endblock %}

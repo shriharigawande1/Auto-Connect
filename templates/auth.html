@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block title %}{{mode|capitalize}} — AutoConnect{% endblock %}
+{% block content %}
+<div class="auth"><div class="auth-box"><h1>{{'Create your account' if mode=='register' else 'Welcome back'}}</h1>
+<p class="muted">{{'Join AutoConnect as a customer or service worker.' if mode=='register' else 'Login to continue your service journey.'}}</p>
+<form method="post">
+{% if mode=='register' %}<label>Name<input name="name" required></label>{% endif %}
+<label>Email<input type="email" name="email" required></label><label>Password<input type="password" name="password" required minlength="6"></label>
+{% if mode=='register' %}<label>Phone<input name="phone"></label><label>Location<input name="location" value="Nagpur"></label>
+<label>Account Type<select name="role" id="role"><option value="user">User</option><option value="worker">Worker</option></select></label>
+<input type="hidden" name="latitude" id="regLat"><input type="hidden" name="longitude" id="regLng"><div id="workerFields" class="hidden"><label>Primary Skill<input name="skill" placeholder="Electrician"></label><label>Experience (years)<input type="number" name="experience" value="1" min="0"></label><label>Skills<input name="skills" placeholder="Fan Repair, Wiring"></label><label>Base Rate ₹<input type="number" name="rate" value="500"></label></div>{% endif %}
+<button class="btn full">{{'Register' if mode=='register' else 'Login'}}</button></form>
+<p>{% if mode=='register' %}Already registered? <a href="{{url_for('login')}}">Login</a>{% else %}New here? <a href="{{url_for('register')}}">Create account</a>{% endif %}</p>
+{% if mode=='register' %}<div class="demo" id="regLocationBox">📍 Worker location: <button type="button" class="btn ghost" id="captureRegLocation">Use My Location</button><small id="regLocationStatus">Optional — helps customers find nearby workers.</small></div>{% endif %}
+{% if mode=='login' %}<div class="demo"><b>Demo accounts</b><br>User: user@autoconnect.demo / 123456<br>Worker: rahul@autoconnect.demo / 123456<br>Admin: admin@autoconnect.demo / admin123</div>{% endif %}
+</div></div>
+{% if mode=='register' %}<script>
+const regBtn=document.getElementById('captureRegLocation'), regStatus=document.getElementById('regLocationStatus');
+if(regBtn){regBtn.addEventListener('click',()=>{
+ if(!navigator.geolocation){regStatus.textContent=' Location is not supported by this browser.';return;}
+ regStatus.textContent=' Requesting location permission…';
+ navigator.geolocation.getCurrentPosition(pos=>{
+   document.getElementById('regLat').value=pos.coords.latitude.toFixed(7);
+   document.getElementById('regLng').value=pos.coords.longitude.toFixed(7);
+   regStatus.textContent=' Location saved for this worker profile.';
+ },()=>regStatus.textContent=' Permission denied. You can register without location.',{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
+});}
+</script>{% endif %}
+{% endblock %}

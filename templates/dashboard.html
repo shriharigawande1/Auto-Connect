@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}User Dashboard{% endblock %}{% block content %}
+<div class="topline"><div><span class="pill">USER DASHBOARD</span><h1>Hello, {{user.name}} 👋</h1><p>What service do you need today?</p></div><a class="btn danger" href="{{url_for('emergency')}}">🚨 Emergency</a></div>
+<section class="analysis card"><h2>🤖 Smart Problem Analysis</h2><p class="muted">Describe the issue in your own words and get a suggested service, urgency and estimate.</p>
+<form id="analysisForm"><textarea name="problem" id="problem" required placeholder="e.g. My fan is not working and making a noise..."></textarea><button class="btn">Analyze Problem</button></form>
+<div id="analysisResult" class="result hidden"></div></section>
+<section><h2>Services</h2><div class="grid cards">{% for s in services %}<a class="card service" href="{{url_for('workers',service=s)}}"><div class="icon">{{ {'Electrician':'🔧','Plumber':'🚰','Mechanic':'🚗','Tutor':'📚','Cleaner':'🧹','Carpenter':'🪚','AC Repair':'❄️','Other':'🛠️'}[s] }}</div><b>{{s}}</b></a>{% endfor %}</div></section>
+<section><div class="section-head"><h2>Recent Bookings</h2><a href="{{url_for('workers')}}">Find Workers</a></div>
+<div class="table-wrap"><table><tr><th>Service</th><th>Worker</th><th>Status</th><th>Amount</th><th></th></tr>{% for b in bookings %}<tr><td>{{b.service}}</td><td>{{b.worker_name or 'Pending'}}</td><td><span class="status">{{b.status}}</span></td><td>₹{{b.amount}}</td><td><a href="{{url_for('booking_detail',bid=b.id)}}">Open</a></td></tr>{% else %}<tr><td colspan="5">No bookings yet.</td></tr>{% endfor %}</table></div></section>
+<section><h2>❤️ Favourite Workers</h2><div class="grid">{% for f in favs %}<div class="mini-card"><b>{{f.name}}</b><p>⭐ {{'%.1f'|format(f.rating)}} · {{f.skill}}</p><a href="{{url_for('worker_profile',wid=f.id)}}">View</a></div>{% else %}<p class="muted">No favourites yet.</p>{% endfor %}</div></section>
+{% endblock %}

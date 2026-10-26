@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Receipt #{{b.id}}{% endblock %}{% block content %}
+<div class="receipt card"><div class="receipt-head"><span>🚗</span><div><h1>AUTOCONNECT</h1><p>Digital Service Receipt</p></div></div><hr>
+<div class="receipt-grid"><div><small>Customer</small><b>{{b.user_name}}</b></div><div><small>Worker</small><b>{{b.worker_name}}</b></div><div><small>Service</small><b>{{b.service}}</b></div><div><small>Date</small><b>{{b.date}}</b></div><div><small>Amount</small><b>₹{{b.amount}}</b></div><div><small>Payment</small><b>{{b.payment_status}}</b></div></div>
+{% if r %}<div class="successbox">Rating: {% for i in range(r.rating) %}⭐{% endfor %}<br>{{r.review}}</div>{% endif %}
+<button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button> <a class="btn ghost" href="{{url_for('dashboard')}}">Back to Dashboard</a></div>
+{% endblock %}

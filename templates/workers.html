@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Find Workers{% endblock %}{% block content %}
+<div class="topline"><div><span class="pill">WORKER SEARCH</span><h1>Workers Near You</h1><p>Find verified workers using service, availability and your browser location.</p></div></div>
+<form class="searchbar" id="workerSearch"><input name="service" value="{{service}}" placeholder="Service e.g. Electrician"><input name="location" value="{{location}}" placeholder="City / location"><input type="hidden" name="lat" id="userLat" value="{{user_lat or ''}}"><input type="hidden" name="lng" id="userLng" value="{{user_lng or ''}}"><button class="btn" type="submit">Search</button><button class="btn ghost" type="button" id="locateBtn">📍 Use My Location</button></form>
+<div class="card" id="locationStatus" style="margin:16px 0;display:none"></div>
+<div class="grid workers">{% for w in workers %}<article class="worker-card"><div class="avatar">{{w.name[0]}}</div><div class="worker-main"><div class="row"><h2>{{w.name}}</h2>{% if w.verified %}<span class="pill">✓ Verified</span>{% endif %}{% if w.available %}<span class="online">● Available</span>{% else %}<span class="offline">● Offline</span>{% endif %}</div><p><b>{{w.skill}}</b> · {{w.experience}} years experience</p><p class="muted">📍 {{w.location}} · {% if w.distance_km is not none %}📏 {{'%.1f'|format(w.distance_km)}} km away · {% endif %}₹{{w.rate}} base · ⭐ {{'%.1f'|format(w.rating)}} ({{w.reviews}} reviews)</p><div class="chips">{% for sk in w.skills.split(',')[:4] %}{% if sk.strip() %}<span>{{sk.strip()}}</span>{% endif %}{% endfor %}</div><div class="actions"><a class="btn" href="{{url_for('worker_profile',wid=w.id)}}">View Profile</a>{% if user and user.role=='user' %}<a class="btn ghost" href="{{url_for('new_booking',wid=w.id)}}">Hire Now</a>{% endif %}</div></div></article>{% else %}<div class="empty"><h2>No verified workers found</h2><p>Try another service/location or allow location access.</p></div>{% endfor %}</div>
+<script>
+const form=document.getElementById('workerSearch'), locate=document.getElementById('locateBtn'), statusBox=document.getElementById('locationStatus');
+function showStatus(msg){statusBox.style.display='block';statusBox.textContent=msg;}
+locate.addEventListener('click',()=>{
+ if(!navigator.geolocation){showStatus('This browser does not support location.');return;}
+ showStatus('Requesting your location…');
+ navigator.geolocation.getCurrentPosition(pos=>{
+   document.getElementById('userLat').value=pos.coords.latitude.toFixed(7);
+   document.getElementById('userLng').value=pos.coords.longitude.toFixed(7);
+   showStatus('Location detected. Searching nearby verified workers…');
+   form.submit();
+ },()=>showStatus('Location permission was denied. You can still search by city/location.'),{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
+});
+</script>
+{% endblock %}
