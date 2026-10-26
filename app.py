@@ -409,6 +409,8 @@ def api_emergency():
     con.close()
     return jsonify([dict(r) for r in rows])
 
-if __name__=="__main__":
-    init_db()
+# Initialize database when the application starts on Render or locally
+init_db()
+
+if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)
